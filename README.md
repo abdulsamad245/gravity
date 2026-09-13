@@ -34,6 +34,8 @@ Docker  -> http://localhost:8080
 Local   -> frontend :5173, backend :4000
 ```
 
+![Gravity architecture diagram](docs/architecture.png)
+
 ## Requirements
 
 - Docker Desktop or Docker Engine with the Compose plugin
