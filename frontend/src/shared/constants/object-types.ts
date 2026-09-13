@@ -1,0 +1,83 @@
+export const OBJECT_TYPES = [
+  'rect',
+  'ellipse',
+  'triangle',
+  'diamond',
+  'star',
+  'hexagon',
+  'line',
+  'arrow',
+  'elbowArrow',
+  'blockArrow',
+  'divider',
+  'sticky',
+  'text',
+  'code',
+  'image',
+  'audio',
+  'video',
+  'file',
+  'embed',
+  'path',
+  'connector',
+  'frame',
+  'table',
+  'chart',
+  'stamp',
+  'rope',
+] as const;
+export type ObjectType = (typeof OBJECT_TYPES)[number];
+
+export const TOOLS = [
+  'select',
+  'hand',
+  'pen',
+  'highlighter',
+  'eraser',
+  'rect',
+  'ellipse',
+  'triangle',
+  'diamond',
+  'star',
+  'hexagon',
+  'line',
+  'arrow',
+  'elbowArrow',
+  'blockArrow',
+  'divider',
+  'sticky',
+  'text',
+  'code',
+  'frame',
+  'table',
+  'mindmap',
+  'chart',
+  'embed',
+  'connector',
+  'rope',
+  'laser',
+  'stamp',
+  'comment',
+  'attract',
+  'repel',
+  'wind',
+  'magnet',
+  'archiveWell',
+] as const;
+export type ToolId = (typeof TOOLS)[number];
+
+/** Legacy facilitation glyph list (prefer FACILITATION_STAMPS). */
+export const STAMP_GLYPHS = ['⭐', '✅', '❓', '❤️', '➕'] as const;
+export type StampGlyph = (typeof STAMP_GLYPHS)[number];
+
+/** Object types that use stroke as the primary ink color. */
+export const STROKE_PRIMARY_TYPES: readonly ObjectType[] = [
+  'line',
+  'arrow',
+  'elbowArrow',
+  'blockArrow',
+  'divider',
+  'path',
+  'connector',
+  'rope',
+];

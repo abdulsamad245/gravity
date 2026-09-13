@@ -1,0 +1,73 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # Not published to the host by default; backend reaches it on the Compose network.
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${PORT:-4000}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      AUTH_MODE: ${AUTH_MODE:-guest}
+      DATA_DIR: /data
+      APP_NAME: ${APP_NAME:-Gravity}
+      API_PREFIX: ${API_PREFIX:-/api/v1}
+      API_DOCS_PATH: ${API_DOCS_PATH:-/api/docs}
+      WS_PATH_PREFIX: ${WS_PATH_PREFIX:-/ws}
+      REPLAY_LOG_MAX_ENTRIES: ${REPLAY_LOG_MAX_ENTRIES:-100000}
+      ROOM_PERSIST_DEBOUNCE_MS: ${ROOM_PERSIST_DEBOUNCE_MS:-1000}
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:-60000}
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-300}
+      LLM_PROVIDER: ${LLM_PROVIDER:-openai}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_BASE_URL: ${LLM_BASE_URL:-https://api.openai.com/v1}
+      LLM_MODEL: ${LLM_MODEL:-gpt-4o-mini}
+      LLM_TIMEOUT_MS: ${LLM_TIMEOUT_MS:-30000}
+      # Invites: BullMQ + Redis (durable). Empty SMTP = deferred log only.
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      INVITE_FROM_EMAIL: ${INVITE_FROM_EMAIL:-}
+      INVITE_FROM_NAME: ${INVITE_FROM_NAME:-Gravity}
+      EMAIL_QUEUE_CONCURRENCY: ${EMAIL_QUEUE_CONCURRENCY:-2}
+      EMAIL_QUEUE_MAX_ATTEMPTS: ${EMAIL_QUEUE_MAX_ATTEMPTS:-3}
+      EMAIL_QUEUE_RETRY_BASE_MS: ${EMAIL_QUEUE_RETRY_BASE_MS:-1000}
+      EMAIL_QUEUE_MAX_PENDING: ${EMAIL_QUEUE_MAX_PENDING:-500}
+      EMAIL_QUEUE_FLUSH_TIMEOUT_MS: ${EMAIL_QUEUE_FLUSH_TIMEOUT_MS:-8000}
+      EMAIL_QUEUE_NAME: ${EMAIL_QUEUE_NAME:-gravity-invite-email}
+      APP_PUBLIC_URL: ${APP_PUBLIC_URL:-http://localhost:${FRONTEND_PORT:-8080}}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+    expose:
+      - "${PORT:-4000}"
+    volumes:
+      # Share host backend/data so Docker and local `npm run dev` see the same
+      # rooms, replay logs, and uploaded images (named volumes used to diverge).
+      - ./backend/data:/data
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

@@ -1,0 +1,14 @@
+node_modules/
+dist/
+build/
+.env
+.env.*
+!.env.example
+!backend/.env.example
+!frontend/.env.example
+*.log
+test-results/
+playwright-report/
+data/
+backend/data/
+.DS_Store

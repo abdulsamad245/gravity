@@ -1,0 +1,21 @@
+﻿{
+  "name": "gravity-backend-e2e",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Black-box HTTP + WebSocket e2e against a listening Gravity backend",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "@types/ws": "^8.18.1",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10",
+    "ws": "^8.21.1",
+    "y-websocket": "^1.5.4",
+    "yjs": "^13.6.31"
+  }
+}
